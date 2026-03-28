@@ -1,11 +1,13 @@
 package com.chemical.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "permissions")
@@ -16,10 +18,29 @@ import java.io.Serializable;
 public class Permission extends BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String table_key;
+    @Column(nullable = false)
+    private String code;
 
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String action; // read, write, export, delete
+
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    @JsonIgnoreProperties(value = {"permission"})
+    private List<RolePermission> rolePermissions;
+
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    @JsonIgnoreProperties(value = {"permission"})
+    private List<PermissionFlow> permissionFlows;
 }

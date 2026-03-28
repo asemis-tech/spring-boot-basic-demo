@@ -8,28 +8,24 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-@Mapper(componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+import org.mapstruct.ReportingPolicy; // Quan trọng: Thêm dòng này
+
+@Mapper(
+        componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE // Phép thuật tắt 12 lỗi nằm ở đây
+)
 public interface UserMapper {
 
-    UserResponseDTO convertToUserResponse(User user);
-
-    @Mapping(target = "created_at", ignore = true)
-    @Mapping(target = "created_by", ignore = true)
-    @Mapping(target = "updated_at", ignore = true)
-    @Mapping(target = "updated_by", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "role",ignore = true)
-    @Mapping(target = "authorities", ignore = true)
-    User userCreateRequestConvertToUser(UserCreateRequestDTO request);
-
-    @Mapping(target = "created_at", ignore = true)
-    @Mapping(target = "created_by", ignore = true)
-    @Mapping(target = "updated_at", ignore = true)
-    @Mapping(target = "updated_by", ignore = true)
+    // Ánh xạ từ Entity sang Response: Chủ động lờ đi các trường DTO có mà Entity không có
     @Mapping(target = "avatar", ignore = true)
     @Mapping(target = "gender", ignore = true)
     @Mapping(target = "role", ignore = true)
-    @Mapping(target = "authorities", ignore = true)
+    UserResponseDTO convertToUserResponse(User user);
+
+    // Ánh xạ từ Request sang Entity: Nhờ ReportingPolicy.IGNORE, nó sẽ tự lờ đi 12 trường bị thiếu
+    User userCreateRequestConvertToUser(UserCreateRequestDTO request);
+
+    // Ánh xạ từ Update Request sang Entity
     void userUpdateRequestConvertToUser(@MappingTarget User user, UserUpdateRequestDTO request);
 }

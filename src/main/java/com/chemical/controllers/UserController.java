@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Tag(name = "User Controller", description = "Endpoints for managing users")
@@ -54,7 +55,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public BaseResponse<User> updateUser(@PathVariable("id") Long id, @RequestBody UserUpdateRequestDTO request) {
+    public BaseResponse<User> updateUser(@PathVariable("id") UUID id, @RequestBody UserUpdateRequestDTO request) {
         log.info("request to update Section with id:  " + id);
         User user = userService.update(id, request);
         return BaseResponse.ok(user);
@@ -62,7 +63,7 @@ public class UserController {
 
     @Operation(summary = "Delete user by ID")
     @DeleteMapping("/{id}")
-    public BaseResponse<Void> deleteUser(@PathVariable("id") Long id) {
+    public BaseResponse<Void> deleteUser(@PathVariable("id") UUID id) {
         log.info("request to update Section with id:  " + id);
         userService.delete(id);
         return BaseResponse.ok(null);

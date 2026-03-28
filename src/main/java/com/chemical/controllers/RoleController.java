@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Tag(name = "Role Controller", description = "Endpoints for managing roles")
@@ -34,7 +35,7 @@ public class RoleController {
 
     @Operation(summary = "Get role details by ID")
     @GetMapping("/{id}")
-    public BaseResponse<RoleResponseDTO> getDetailRole(@PathVariable("id") Long id) {
+    public BaseResponse<RoleResponseDTO> getDetailRole(@PathVariable("id") UUID id) {
         RoleResponseDTO role = roleService.findDetailsById(id);
         return BaseResponse.ok(role);
     }
@@ -48,7 +49,7 @@ public class RoleController {
 
     @Operation(summary = "Update role details by ID")
     @PutMapping("/{id}")
-    public BaseResponse<Role> updateRole(@PathVariable("id") Long id, @RequestBody RoleUpdateRequestDTO request) {
+    public BaseResponse<Role> updateRole(@PathVariable("id") UUID id, @RequestBody RoleUpdateRequestDTO request) {
         log.info("request to update Section with id:  " + id);
         Role updatedRole = roleService.update(id, request);
         return BaseResponse.ok(updatedRole);
@@ -56,7 +57,7 @@ public class RoleController {
 
     @Operation(summary = "Delete role by ID")
     @DeleteMapping("/{id}")
-    public BaseResponse<Void> deleteRole(@PathVariable("id") Long id) {
+    public BaseResponse<Void> deleteRole(@PathVariable("id") UUID id) {
         log.info("request to update Section with id:  " + id);
         roleService.delete(id);
         return BaseResponse.ok(null);

@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PermissionResponseDTO {
-    private Long id;
+    private UUID id;
     private String table_key;
     private Integer is_read;
     private Integer is_create;

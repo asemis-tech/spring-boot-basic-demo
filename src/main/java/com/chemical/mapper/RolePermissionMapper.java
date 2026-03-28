@@ -1,6 +1,7 @@
 package com.chemical.mapper;
 
 import com.chemical.dto.response.PermissionResponseDTO;
+import com.chemical.entity.Permission;
 import com.chemical.entity.RolePermission;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +13,7 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RolePermissionMapper {
     @Mapping(source = "permission.id", target = "id")
-    @Mapping(source = "permission.table_key", target = "table_key")
+    @Mapping(source = "permission.name", target = "table_key")
     @Mapping(source = "is_read", target = "is_read")
     @Mapping(source = "is_create", target = "is_create")
     @Mapping(source = "is_update", target = "is_update")

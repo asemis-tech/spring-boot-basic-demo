@@ -1,5 +1,6 @@
 package com.chemical.config.security;
 
+import com.chemical.common.handler.GlobalExceptionHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,6 +33,7 @@ public class SecutiryConfigurations {
 
     CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     SecurityFilter securityFilter;
+    GlobalExceptionHandler globalExceptionHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -49,6 +51,10 @@ public class SecutiryConfigurations {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html")
                         .permitAll()
+                        // MỞ CỬA CHO TẤT CẢ API CỦA COMPANY:
+                        .requestMatchers("/api/company/**").permitAll()
+                        .requestMatchers("/api/branch/**").permitAll()
+
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(customAuthenticationEntryPoint))

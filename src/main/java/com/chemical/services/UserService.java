@@ -8,6 +8,7 @@ import com.chemical.entity.User;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
     Page<UserResponseDTO> search(SearchRequest request);
@@ -15,6 +16,6 @@ public interface UserService {
     UserResponseDTO currentUserDetails();
     UserResponseDTO findByEmailAuth(String email);
     List<UserResponseDTO> getAllUsers();
-    User update(Long userId, UserUpdateRequestDTO request);
-    void delete(Long userId);
+    User update(UUID userId, UserUpdateRequestDTO request);
+    void delete(UUID userId);
 }

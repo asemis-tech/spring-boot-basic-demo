@@ -15,7 +15,6 @@ public interface ManufacturerMapper {
     @Mapping(source = "manufacturer.id", target = "id")
     @Mapping(source = "manufacturer.name", target = "name")
     @Mapping(source = "manufacturer.address", target = "address")
-    @Mapping(source = "manufacturer.website", target = "website")
     @Mapping(source = "manufacturer.contact_information", target = "contact_information")
     ManufacturerResponseDTO toManufacturerResponseDTO(ChemicalManufacturer chemicalManufacturer);
 

@@ -7,8 +7,8 @@ spring:
     name: Spring Boot Demo
   datasource:
     url: ${SPRING_DATASOURCE_URL:database_name}
-    username: ${SPRING_DATASOURCE_USERNAME:postgre}
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
   jpa:
     hibernate:
       ddl-auto: update

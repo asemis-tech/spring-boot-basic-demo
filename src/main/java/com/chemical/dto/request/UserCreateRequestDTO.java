@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,5 +25,5 @@ public class UserCreateRequestDTO {
     private String password;
 
     @NonNull
-    private Long roleId;
+    private UUID roleId;
 }

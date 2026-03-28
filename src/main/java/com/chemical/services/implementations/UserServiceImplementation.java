@@ -10,6 +10,7 @@ import com.chemical.dto.request.UserUpdateRequestDTO;
 import com.chemical.dto.response.UserResponseDTO;
 import com.chemical.entity.Role;
 import com.chemical.entity.User;
+import com.chemical.entity.UserRole;
 import com.chemical.mapper.UserMapper;
 import com.chemical.repositories.RoleRepository;
 import com.chemical.repositories.UserRepository;
@@ -27,8 +28,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -56,16 +59,34 @@ public class UserServiceImplementation implements UserService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new ConflictException("User's already exist");
         }
-        Role role = roleRepository.findById(request.getRoleId())
-                .orElseThrow(() -> new RecordNotFoundException("Không tìm thấy vai trò: " + request.getRoleId()));
+
         User user = userMapper.userCreateRequestConvertToUser(request);
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword_hash());
+
+        Role role = roleRepository.findById(request.getRoleId())
+                .orElseThrow(() -> new RecordNotFoundException("Không tìm thấy vai trò: " + request.getRoleId()));
+//        User user = userMapper.userCreateRequestConvertToUser(request);
+
         log.info("this is role: " + role);
-        user.setRole(role);
+        UserRole userRole = new UserRole();
+        userRole.setUser(user);
+        userRole.setRole(role);
+        userRole.setCreated_by("user");
+        userRole.setUpdated_by("user");
+        userRole.setCreated_at(new Date());
+        userRole.setUpdated_at(new Date());
+
+        List<UserRole> rolesList = new ArrayList<>();
+        rolesList.add(userRole);
+        user.setUserRoles(rolesList);
+
         user.setCreated_by("user");
         user.setUpdated_by("user");
         user.setCreated_at(new Date());
         user.setUpdated_at(new Date());
+
         log.info("save user in service: " + user);
 
         return userRepository.save(user);
@@ -101,7 +122,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User update(Long userId, UserUpdateRequestDTO updateRequest) {
+    public User update(UUID userId, UserUpdateRequestDTO updateRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RecordNotFoundException("Không tìm thấy người dùng id = " + userId));
 
@@ -111,8 +132,18 @@ public class UserServiceImplementation implements UserService {
             Role role = roleRepository.findById(updateRequest.getRoleId())
                     .orElseThrow(
                             () -> new RecordNotFoundException("Không tìm thấy vai trò: " + updateRequest.getRoleId()));
-            user.setRole(role);
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(role);
+
+            if(user.getUserRoles() != null) {
+                user.getUserRoles().clear();
+            } else {
+                user.setUserRoles(new ArrayList<>());
+            }
+            user.getUserRoles().add(userRole);
         }
+
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().trim().isEmpty()) {
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
         }
@@ -125,7 +156,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public void delete(Long userId) {
+    public void delete(UUID userId) {
         try {
             userRepository.deleteById(userId);
         } catch (Exception e) {

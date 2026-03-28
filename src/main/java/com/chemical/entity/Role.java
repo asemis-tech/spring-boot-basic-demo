@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
+
 import java.io.Serializable;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "roles")
@@ -17,33 +18,37 @@ import java.util.stream.Collectors;
 public class Role extends BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    @JsonIgnoreProperties(value = {"roles"}, allowGetters = true)
+    private Company company;
+
+    @Column(nullable = false)
+    private String code;
+
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String slug;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     @JsonIgnoreProperties(value = {"role"})
-    private List<User> users;
+    private List<UserRole> userRoles;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
+    @JsonIgnoreProperties(value = {"role"})
     private List<RolePermission> rolePermissions;
-
-    public List<String> getPermissionKeys() {
-        return rolePermissions.stream()
-                .map(RolePermission::getPermission)
-                .map(Permission::getTable_key)
-                .collect(Collectors.toList());
-    }
-
 }

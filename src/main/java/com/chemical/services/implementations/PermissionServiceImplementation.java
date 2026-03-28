@@ -2,7 +2,9 @@ package com.chemical.services.implementations;
 
 import com.chemical.common.errors.RecordNotFoundException;
 import com.chemical.dto.response.PermissionResponseDTO;
+import com.chemical.entity.Permission;
 import com.chemical.entity.RolePermission;
+import com.chemical.mapper.PermissionMapper;
 import com.chemical.mapper.RolePermissionMapper;
 import com.chemical.repositories.PermissionRepository;
 import com.chemical.repositories.RolePermissionRepository;
@@ -14,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -32,12 +36,14 @@ public class PermissionServiceImplementation implements PermissionService {
     }
 
     @Override
-    public List<PermissionResponseDTO> getPermissionDetailsById(Long permissionId) {
-        List<RolePermission> rolePermissions = rolePermissionRepository.findByPermissionId(permissionId);
+    public List<PermissionResponseDTO> getPermissionDetailsById(UUID permissionId) {
+        List<RolePermission> rolePermissions =
+                rolePermissionRepository.findByPermissionId(permissionId);
 
         if (rolePermissions.isEmpty()) {
             throw new RecordNotFoundException(
-                    "Permission not found with id: " + permissionId);
+                    "Permission not found with id: " + permissionId
+            );
         }
 
         return rolePermissionMapper.toPermissionResponseList(rolePermissions);

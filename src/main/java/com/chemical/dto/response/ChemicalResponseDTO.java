@@ -3,7 +3,6 @@ package com.chemical.dto.response;
 import com.chemical.dto.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class ChemicalResponseDTO extends BaseDTO {
     private Long id;
     private String name;
